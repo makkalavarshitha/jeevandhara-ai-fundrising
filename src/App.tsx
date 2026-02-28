@@ -11,6 +11,8 @@ import HospitalPortal from "./pages/HospitalPortal";
 import UniversityPortal from "./pages/UniversityPortal";
 import AdminDashboard from "./pages/AdminDashboard";
 import Transparency from "./pages/Transparency";
+import CaseDetail from "./pages/CaseDetail";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,10 +29,12 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/cases" element={<VerifiedCases />} />
+              <Route path="/cases/:id" element={<CaseDetail />} />
               <Route path="/hospital" element={<HospitalPortal />} />
               <Route path="/university" element={<UniversityPortal />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/transparency" element={<Transparency />} />
+              <Route path="/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

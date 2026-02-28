@@ -1,14 +1,10 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
+import { casesData, formatCurrency } from "@/lib/cases";
 import { Button } from "@/components/ui/button";
 import { Shield, CheckCircle, Brain, Building2, GraduationCap, Activity, TrendingUp, Users, ArrowRight, Hospital, Cpu, Landmark, Award } from "lucide-react";
 
-const stats = [
-  { label: "Verified Cases", value: "2,847", icon: CheckCircle },
-  { label: "Funds Raised", value: "₹18.3 Cr", icon: TrendingUp },
-  { label: "Partner Hospitals", value: "156", icon: Hospital },
-  { label: "University Partners", value: "42", icon: GraduationCap },
-];
+// stats will be computed inside component to use live totals from casesData
 
 const steps = [
   {
@@ -31,7 +27,7 @@ const steps = [
   },
 ];
 
-const topUniversities = [
+const topContributors = [
   { name: "IIT Bombay", amount: "₹2.4 Cr", cases: 84, logo: "/universities/iit-bombay.png" },
   { name: "AIIMS Delhi", amount: "₹1.9 Cr", cases: 67, logo: null, initials: "AIIMS" },
   { name: "IIT Madras", amount: "₹1.7 Cr", cases: 58, logo: "/universities/iit-madras.png" },
@@ -64,6 +60,14 @@ const Index = () => {
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
   }, []);
+  const totalRequired = casesData.reduce((s, c) => s + c.required, 0);
+  const totalCollected = casesData.reduce((s, c) => s + c.collected, 0);
+  const stats = [
+    { label: "Verified Cases", value: String(casesData.length), icon: CheckCircle },
+    { label: "Funds Collected", value: formatCurrency(totalCollected), icon: TrendingUp },
+    { label: "Total Required", value: formatCurrency(totalRequired), icon: Award },
+    { label: "Partner Hospitals", value: "156", icon: Hospital },
+  ];
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -75,10 +79,10 @@ const Index = () => {
 
         {/* Sliding Top Donor Universities - Large Version */}
         <div className="relative pt-6 pb-0">
-          <div className="container mb-3">
+            <div className="container mb-3">
             <div className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-accent" />
-              <p className="text-sm font-semibold text-accent tracking-wider uppercase">Best Universities</p>
+              <Award className="w-5 h-5 text-white" />
+              <p className="text-sm font-semibold text-white tracking-wider uppercase">Top Contributors</p>
             </div>
           </div>
           <div
@@ -86,7 +90,7 @@ const Index = () => {
             className="flex gap-6 overflow-hidden whitespace-nowrap px-4"
             style={{ scrollBehavior: 'auto' }}
           >
-            {[...topUniversities, ...topUniversities].map((uni, i) => (
+            {[...topContributors, ...topContributors].map((uni, i) => (
               <div
                 key={i}
                 className="inline-flex flex-col items-center justify-center gap-1.5 min-w-[100px] bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-xl px-2 py-3 shrink-0 hover:bg-primary-foreground/15 transition-colors animate-slideInLeft"

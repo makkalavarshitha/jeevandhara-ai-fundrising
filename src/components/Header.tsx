@@ -18,8 +18,8 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-white backdrop-blur border-b border-border">
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <Shield className="w-5 h-5 text-primary-foreground" />
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center overflow-hidden">
+            <img src="/logo.jpeg" alt="JeevanDhara logo" className="w-8 h-8 object-cover" />
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-lg font-bold text-foreground tracking-tight">JeevanDhara</span>

@@ -3,7 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getPendingVerifications, approveVerification, rejectVerification } from "@/lib/hospitals";
+
+const riskColor = (r: string) => {
+  if (r === "High") return "text-destructive bg-destructive/10";
+  if (r === "Medium") return "text-accent bg-accent/10";
+  return "text-success bg-success/10";
+};
 
 const pendingCases = [
   { id: "JD-2848", disease: "Cardiac Bypass", hospital: "Fortis Mumbai", cost: 1400000, aiScore: 92, riskFlag: "Low", duplicate: false, confidence: 94 },
@@ -12,14 +19,28 @@ const pendingCases = [
   { id: "JD-2851", disease: "Dialysis (6 mo)", hospital: "CMC Vellore", cost: 320000, aiScore: 95, riskFlag: "Low", duplicate: false, confidence: 97 },
 ];
 
-const riskColor = (r: string) => {
-  if (r === "High") return "text-destructive bg-destructive/10";
-  if (r === "Medium") return "text-accent bg-accent/10";
-  return "text-success bg-success/10";
-};
-
 const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [pending, setPending] = useState(getPendingVerifications());
+
+  // refresh pending verifications when localStorage changes (other tab) or window gains focus
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === null || e.key === 'jh_pending_verifications_v1') {
+        setPending(getPendingVerifications().slice());
+      }
+    };
+    const onFocus = () => setPending(getPendingVerifications().slice());
+    const onCustom = () => setPending(getPendingVerifications().slice());
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('focus', onFocus);
+    window.addEventListener('jh:pending-updated', onCustom as EventListener);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('jh:pending-updated', onCustom as EventListener);
+    };
+  }, []);
 
   if (!loggedIn) {
     return (
@@ -70,9 +91,9 @@ const AdminDashboard = () => {
         {/* Summary */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Pending Review", value: "4", color: "text-accent" },
+            { label: "Pending Hospital Verifs", value: String(pending.length), color: "text-accent" },
+            { label: "Pending Cases", value: "4", color: "text-accent" },
             { label: "Approved Today", value: "12", color: "text-success" },
-            { label: "Rejected", value: "2", color: "text-destructive" },
             { label: "Avg Confidence", value: "86.7%", color: "text-foreground" },
           ].map((s, i) => (
             <div key={i} className="bg-card rounded-xl border border-border p-5">
@@ -82,8 +103,8 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        {/* Case Table */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
+        {/* Cases Pending AI Review */}
+        <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm mb-6">
           <div className="px-6 py-4 border-b border-border flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-muted-foreground" />
             <h2 className="text-sm font-semibold text-foreground">Cases Pending AI Review</h2>
@@ -134,6 +155,48 @@ const AdminDashboard = () => {
                         </Button>
                         <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10 h-7 px-2">
                           <XCircle className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Hospital Verifications */}
+        <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
+          <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+            <Shield className="w-4 h-4 text-muted-foreground" />
+            <h2 className="text-sm font-semibold text-foreground">Hospital Verifications Pending</h2>
+          </div>
+          <div className="overflow-x-auto">
+            
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/40">
+                  <th className="text-left px-5 py-3 font-medium text-muted-foreground">Reg ID</th>
+                  <th className="text-left px-5 py-3 font-medium text-muted-foreground">Organization</th>
+                  <th className="text-left px-5 py-3 font-medium text-muted-foreground">Submitted</th>
+                  <th className="text-left px-5 py-3 font-medium text-muted-foreground">Certificate</th>
+                  <th className="text-left px-5 py-3 font-medium text-muted-foreground">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pending.map((v: any) => (
+                  <tr key={v.regId} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
+                    <td className="px-5 py-4 font-mono text-foreground">{v.regId}</td>
+                    <td className="px-5 py-4 text-foreground font-medium">{v.name || '-'}</td>
+                    <td className="px-5 py-4 text-muted-foreground">{new Date(v.submittedAt).toLocaleString()}</td>
+                    <td className="px-5 py-4 font-semibold text-foreground">{v.certificateName || '—'}</td>
+                    <td className="px-5 py-4">
+                      <div className="flex gap-1.5">
+                        <Button size="sm" variant="ghost" className="text-success hover:bg-success/10 h-7 px-2" onClick={() => { approveVerification(v.regId); setPending(getPendingVerifications().slice()); }}>
+                          <CheckCircle className="w-3.5 h-3.5" /> Approve
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10 h-7 px-2" onClick={() => { rejectVerification(v.regId); setPending(getPendingVerifications().slice()); }}>
+                          <XCircle className="w-3.5 h-3.5" /> Reject
                         </Button>
                       </div>
                     </td>

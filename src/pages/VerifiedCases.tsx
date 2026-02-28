@@ -2,21 +2,10 @@ import { CheckCircle, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { casesData, formatCurrency, formatCurrencyWithPercent } from "@/lib/cases";
 
 const diseases = ["All", "Cancer", "Cardiac", "Kidney", "Liver", "Neurological"];
-
-const casesData = [
-  { id: "JD-2847", disease: "Cancer", hospital: "AIIMS Delhi", required: 850000, collected: 612000, urgency: "Critical", verified: true },
-  { id: "JD-2846", disease: "Cardiac", hospital: "Fortis Mumbai", required: 1200000, collected: 980000, urgency: "High", verified: true },
-  { id: "JD-2845", disease: "Kidney", hospital: "CMC Vellore", required: 450000, collected: 125000, urgency: "Medium", verified: true },
-  { id: "JD-2844", disease: "Neurological", hospital: "NIMHANS Bangalore", required: 2100000, collected: 1750000, urgency: "Critical", verified: true },
-  { id: "JD-2843", disease: "Liver", hospital: "Medanta Gurugram", required: 680000, collected: 340000, urgency: "High", verified: true },
-  { id: "JD-2842", disease: "Cancer", hospital: "Tata Memorial Mumbai", required: 950000, collected: 850000, urgency: "Medium", verified: true },
-  { id: "JD-2841", disease: "Cardiac", hospital: "Narayana Health Bangalore", required: 750000, collected: 200000, urgency: "High", verified: true },
-  { id: "JD-2840", disease: "Kidney", hospital: "PGI Chandigarh", required: 380000, collected: 380000, urgency: "Medium", verified: true },
-];
-
-const formatCurrency = (n: number) => `₹${(n / 100000).toFixed(1)}L`;
 
 const urgencyColor = (u: string) => {
   if (u === "Critical") return "text-destructive bg-destructive/10";
@@ -28,7 +17,6 @@ const VerifiedCases = () => {
   const [filter, setFilter] = useState("All");
 
   const filtered = filter === "All" ? casesData : casesData.filter(c => c.disease === filter);
-
   return (
     <div className="py-10">
       <div className="container">
@@ -59,10 +47,10 @@ const VerifiedCases = () => {
             const percent = Math.round((c.collected / c.required) * 100);
             const isComplete = percent >= 100;
             return (
-              <div
-                key={c.id}
-                className="bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
-              >
+              <Link to={`/cases/${c.id}`} key={c.id} className="block">
+                <div
+                  className="bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <span className="text-xs font-mono text-muted-foreground">{c.id}</span>
@@ -83,21 +71,19 @@ const VerifiedCases = () => {
 
                 <div className="mt-auto">
                   <div className="flex justify-between text-sm mb-1.5">
-                    <span className="text-muted-foreground">
-                      {formatCurrency(c.collected)} raised
-                    </span>
-                    <span className="font-semibold text-foreground">{formatCurrency(c.required)}</span>
+                    <div className="text-sm text-muted-foreground">
+                      <div>Collected: <span className="font-semibold text-foreground">{formatCurrency(c.collected)}</span></div>
+                      <div className="text-xs text-muted-foreground">{percent}% of required</div>
+                    </div>
+                    <div className="text-sm text-muted-foreground text-right">
+                      <div>Required: <span className="font-semibold text-foreground">{formatCurrency(c.required)}</span></div>
+                      <div className="text-xs text-muted-foreground">{isComplete ? <span className="text-success">Fully Funded ✓</span> : 'Needs funding'}</div>
+                    </div>
                   </div>
                   <Progress value={Math.min(percent, 100)} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1.5">
-                    {isComplete ? (
-                      <span className="text-success font-medium">Fully Funded ✓</span>
-                    ) : (
-                      `${percent}% funded`
-                    )}
-                  </p>
                 </div>
-              </div>
+                </div>
+              </Link>
             );
           })}
         </div>
