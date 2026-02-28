@@ -74,8 +74,8 @@ const Index = () => {
         </div>
 
         {/* Sliding Top Donor Universities - Large Version */}
-        <div className="relative pt-10 pb-0">
-          <div className="container mb-6">
+        <div className="relative pt-6 pb-0">
+          <div className="container mb-3">
             <div className="flex items-center gap-2">
               <Award className="w-5 h-5 text-accent" />
               <p className="text-sm font-semibold text-accent tracking-wider uppercase">Best Universities</p>
@@ -89,29 +89,28 @@ const Index = () => {
             {[...topUniversities, ...topUniversities].map((uni, i) => (
               <div
                 key={i}
-                className="inline-flex flex-col items-center justify-center gap-4 min-w-[180px] bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-2xl px-6 py-8 shrink-0 hover:bg-primary-foreground/15 transition-colors animate-slideInLeft"
+                className="inline-flex flex-col items-center justify-center gap-1.5 min-w-[100px] bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-xl px-2 py-3 shrink-0 hover:bg-primary-foreground/15 transition-colors animate-slideInLeft"
                 style={{
                   animation: `slideInLeft 0.6s ease-out ${i * 0.1}s both`
                 }}
               >
-                <div className="w-24 h-24 rounded-lg bg-primary-foreground/25 flex items-center justify-center shrink-0 overflow-hidden border border-primary-foreground/10">
+                <div className="w-14 h-14 rounded-lg bg-primary-foreground/25 flex items-center justify-center shrink-0 overflow-hidden border border-primary-foreground/10">
                   {uni.logo ? (
-                    <img src={uni.logo} alt={uni.name} className="w-20 h-20 object-contain" />
+                    <img src={uni.logo} alt={uni.name} className="w-10 h-10 object-contain" />
                   ) : (
-                    <span className="text-2xl font-bold text-accent text-center px-2">{(uni as any).initials}</span>
+                    <span className="text-sm font-bold text-accent text-center px-1">{(uni as any).initials}</span>
                   )}
                 </div>
                 <div className="text-center">
-                  <p className="text-base font-bold text-primary-foreground">{uni.name}</p>
-                  <p className="text-sm text-primary-foreground/70 mt-1">{uni.amount}</p>
-                  <p className="text-xs text-primary-foreground/50">{uni.cases} cases</p>
+                  <p className="text-xs font-bold text-primary-foreground leading-tight">{uni.name}</p>
+                  <p className="text-xs text-primary-foreground/70">{uni.amount}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="container relative py-12 md:py-20 px-8 md:px-16">
+        <div className="container relative py-8 md:py-12 px-8 md:px-16 z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {/* Left Side - Hero Content */}
             <div className="pr-8">
@@ -121,7 +120,7 @@ const Index = () => {
                   Government-Grade Verified Platform
                 </span>
               </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground leading-[1.15] mb-6 text-balance">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary-foreground leading-[1.15] mb-4 text-balance">
                 Verified Medical Funding Through AI and Institutional Trust
               </h1>
               <p className="text-base md:text-lg text-primary-foreground/70 mb-6 leading-relaxed">
@@ -159,9 +158,9 @@ const Index = () => {
               </div>
               
               {/* Circular Container */}
-              <div className="relative w-80 h-80 flex items-center justify-center">
+              <div className="relative w-56 h-56 flex items-center justify-center">
                 {/* Center Circle */}
-                <div className="absolute w-24 h-24 rounded-full bg-primary-foreground/10 border-2 border-accent/30 flex items-center justify-center z-10">
+                <div className="absolute w-20 h-20 rounded-full bg-primary-foreground/10 border-2 border-accent/30 flex items-center justify-center z-10">
                   <div className="text-center">
                     <p className="text-xs font-semibold text-accent uppercase">Verified</p>
                     <p className="text-xs font-bold text-primary-foreground">Funding</p>
@@ -172,26 +171,26 @@ const Index = () => {
                 <div className="absolute w-full h-full animate-spin" style={{ animationDuration: '20s' }}>
                   {steps.map((step, i) => {
                     const angle = (i * 120);
-                    const radius = 120;
+                    const radius = 80;
                     const x = radius * Math.cos((angle * Math.PI) / 180);
                     const y = radius * Math.sin((angle * Math.PI) / 180);
                     
                     return (
                       <div
                         key={i}
-                        className="absolute w-32"
+                        className="absolute w-24"
                         style={{
-                          left: `calc(50% + ${x}px - 64px)`,
-                          top: `calc(50% + ${y}px - 64px)`,
+                          left: `calc(50% + ${x}px - 48px)`,
+                          top: `calc(50% + ${y}px - 48px)`,
                           animation: `spin-reverse 20s linear infinite`
                         }}
                       >
-                        <div className="relative bg-primary-foreground/10 rounded-full p-4 border border-primary-foreground/20 hover:bg-primary-foreground/15 transition-colors text-center w-28 h-28 flex flex-col items-center justify-center">
-                          <span className="text-2xl font-black text-accent/30 absolute top-1">{step.step}</span>
-                          <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center mb-1 z-10">
-                            <step.icon className="w-4 h-4 text-accent" />
+                        <div className="relative bg-primary-foreground/10 rounded-full p-2 border border-primary-foreground/20 hover:bg-primary-foreground/15 transition-colors text-center w-24 h-24 flex flex-col items-center justify-center">
+                          <span className="text-lg font-black text-accent/30 absolute top-0.5">{step.step}</span>
+                          <div className="w-6 h-6 rounded-lg bg-accent/20 flex items-center justify-center mb-0.5 z-10">
+                            <step.icon className="w-3 h-3 text-accent" />
                           </div>
-                          <h4 className="text-xs font-semibold text-primary-foreground mb-1">{step.title}</h4>
+                          <h4 className="text-xs font-semibold text-primary-foreground mb-0.5">{step.title}</h4>
                         </div>
                       </div>
                     );

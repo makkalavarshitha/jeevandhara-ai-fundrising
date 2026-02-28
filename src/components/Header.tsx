@@ -15,7 +15,7 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-black backdrop-blur border-b border-border">
+    <header className="sticky top-0 z-50 bg-white backdrop-blur border-b border-border">
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
@@ -27,16 +27,12 @@ const Header = () => {
           </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-2">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                location.pathname === link.to
-                  ? "text-foreground bg-muted"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              }`}
+              className="px-3 py-2 text-sm font-medium rounded-md bg-accent text-accent-foreground hover:bg-white hover:text-accent transition-colors"
             >
               {link.label}
             </Link>
@@ -44,14 +40,11 @@ const Header = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
+          <Button size="sm" className="bg-accent text-accent-foreground hover:bg-white hover:text-accent" asChild>
             <Link to="/hospital">Hospital Login</Link>
           </Button>
-          <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+          <Button size="sm" className="bg-accent text-accent-foreground hover:bg-white hover:text-accent" asChild>
             <Link to="/university">University Login</Link>
-          </Button>
-          <Button variant="outline" size="sm">
-            Sign out
           </Button>
         </div>
 
@@ -76,14 +69,11 @@ const Header = () => {
             </Link>
           ))}
           <div className="pt-2 flex flex-col gap-2">
-            <Button variant="outline" size="sm" asChild>
+            <Button size="sm" className="bg-accent text-accent-foreground hover:bg-white hover:text-accent" asChild>
               <Link to="/hospital" onClick={() => setMobileOpen(false)}>Hospital Login</Link>
             </Button>
-            <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+            <Button size="sm" className="bg-accent text-accent-foreground hover:bg-white hover:text-accent" asChild>
               <Link to="/university" onClick={() => setMobileOpen(false)}>University Login</Link>
-            </Button>
-            <Button variant="outline" size="sm">
-              Sign out
             </Button>
           </div>
         </div>
